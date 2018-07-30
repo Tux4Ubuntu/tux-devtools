@@ -1,7 +1,10 @@
 [Desktop Entry]
 Type=Application
-Name=Tilda
-Exec=<command to execute>
-Icon=<full path to icon>
-Comment=<optinal comments>
+Exec=/usr/bin/tilda
+Hidden=false
+NoDisplay=false
 X-GNOME-Autostart-enabled=true
+Name[en_US]=Tilda
+Name=Tilda
+Comment[en_US]=Quake like drop down terminal
+Comment=Quake like drop down terminal
