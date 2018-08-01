@@ -271,10 +271,10 @@ function uninstall {
         clear
         printf "\033c"
         # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
-        RED='\033[0;31m'
+        LIGHT_RED='\033[1;31m'
         NC='\033[0m' # No Color
         printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
-        printf "║ ${RED}TUX 4 UBUNTU - Developer - UNINSTALL${NC}            © 2017 Tux4Ubuntu Initiative ║\n"                       
+        printf "║ ${LIGHT_RED}TUX 4 UBUNTU - Developer - UNINSTALL${NC}            © 2017 Tux4Ubuntu Initiative ║\n"                       
         printf "║ Let's Pause Tux a Bit                         http://tux4ubuntu.blogspot.com ║\n"
         printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
         cat<<EOF    
