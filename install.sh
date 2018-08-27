@@ -419,6 +419,7 @@ function install_if_not_found {
         fi
     done
 }
+
 function uninstall_if_found { 
     # As found here: http://askubuntu.com/questions/319307/reliably-check-if-a-package-is-installed-or-not
     for pkg in $1; do
@@ -434,6 +435,7 @@ function uninstall_if_found {
         fi
     done
 }
+
 function header {
     var_size=${#1}
     # 80 is a full width set by us (to work in the smallest standard terminal window)
@@ -491,7 +493,7 @@ function ask_uninstall {
 
 function tux_install {
     # Local/Github folder (comment out the other one if you're working locally)
-    $TEMP_DIR/tux-install-master/install.sh $1
+    ../tux-install-master/install.sh
     #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
 }
 
