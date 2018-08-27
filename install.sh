@@ -237,34 +237,6 @@ function install_tilda {
 
 }
 
-function get_the_tshirt {
-    printf "\033c"
-    header "Get the T-SHIRT" "$1"
-    # Original T-shirt art by Joan Stark found here: http://www.ascii-code.com/ascii-art/clothing-and-accessories/shirts.php
-    # Tux painted by ppa package 'cowsay'
-cat << "EOF"
-                             .-""`'-..____..-'`""-.            
-                           /`\                    /`\          
-                          /`  |                  |  `\         
-                         /`   |       .--.       |   `\        
-                        /     |      |o_o |      |     \       
-                        '-.__.|      |:_/ |      |.___.-'            
-                              |     //   \ \     |            
-                              |    (|     | )    |    
-                              |   /'\_   _/`\    |             
-                              |   \___)=(___/    |             
-                              |                  |                     
-                              |                  |             
-                              '._              _.'             
-                                 `""--------""`                
-                                                                       
-EOF
-    echo ""
-    echo "Launching website in your favourite browser."
-    x-www-browser https://teespring.com/tux-tshirt &
-    read -n1 -r -p "Press any key to continue..." key
-    echo ""
-}
 function uninstall {
     while :
     do
@@ -289,9 +261,8 @@ function uninstall {
 ║   5) GIT + SSH keys                                                          ║
 ║   6) Amazon CLI                                                              ║
 ║   7) Tilda                                                                   ║
-║   8) Return the t-shirt                                                      ║
 ║   ------------------------------------------------------------------------   ║
-║   9) Back to installing                        - Go back to installer        ║
+║   8) Back to installing                        - Go back to installer        ║
 ║   ------------------------------------------------------------------------   ║
 ║   Q) I'm done                                  - Quit the installer (Ctrl+C) ║
 ║                                                                              ║
@@ -313,8 +284,6 @@ EOF
                 uninstall_amazon_cli $i
                 ((i++))
                 uninstall_tilda $i
-                ((i++))
-                return_the_tshirt $i
                 ;;
         "2")    uninstall_chromium ;;
         "3")    uninstall_vsc ;;
@@ -322,8 +291,7 @@ EOF
         "5")    uninstall_git_and_ssh_keys;;
         "6")    uninstall_amazon_cli ;;
         "7")    uninstall_tilda ;;
-        "8")    return_the_tshirt ;;
-        "9")    break ;;
+        "8")    break ;;
         "Q")    exit ;;
         "q")    exit ;;
          * )    echo "That's an invalid option. Try again." ;;
@@ -415,33 +383,7 @@ function uninstall_tilda {
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
-function return_the_tshirt {
-    printf "\033c"
-    header "Return the T-SHIRT" "$1"
-    # Original T-shirt art by Joan Stark found here: http://www.ascii-code.com/ascii-art/clothing-and-accessories/shirts.php
-    # Tux painted by ppa package 'cowsay'
-cat << "EOF"
-                             .-""`'-..____..-'`""-.            
-                           /`\                    /`\          
-                          /`  |                  |  `\         
-                         /`   |       .--.       |   `\        
-                        /     |      |o_o |      |     \       
-                        '-.__.|      |:_/ |      |.___.-'            
-                              |     //   \ \     |            
-                              |    (|     | )    |    
-                              |   /'\_   _/`\    |             
-                              |   \___)=(___/    |             
-                              |                  |                     
-                              |                  |             
-                              '._              _.'             
-                                 `""--------""`                
-EOF
-    echo ""
-    echo "Launching website in your favourite browser."
-    x-www-browser https://tux4ubuntu.blogspot.com/p/web-shop.html &
-    read -n1 -r -p "Press any key to continue..." key
-    echo ""
-}
+
 function check_sudo {
     if sudo -n true 2>/dev/null; then 
         :
@@ -535,44 +477,24 @@ function ask_uninstall {
         esac
     done
 }
-function tux_installer {
-    if [ "${BASH_ARGV[0]}" = "nested" ] ; then
-        exit
-    else
-        # This installer is inspired by Papirus Development Team: https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/blob/master/install-papirus-home-gtk.sh
-        gh_repo="tux4ubuntu"
-        gh_desc="Tux 4 Ubuntu - Let's bring Tux to Ubuntu"
-        cat <<- EOF
-     _____ _   ___  __  _  _     _   _ ____  _   _ _   _ _____ _   _ 
-    |_   _| | | \ \/ / | || |   | | | | __ )| | | | \ | |_   _| | | |
-      | | | | | |\  /  | || |_  | | | |  _ \| | | |  \| | | | | | | |
-      | | | |_| |/  \  |__   _| | |_| | |_) | |_| | |\  | | | | |_| |
-      |_|  \___//_/\_\    |_|    \___/|____/ \___/|_| \_| |_|  \___/ 
-                                                                      
-  $gh_desc
-  https://github.com/tuxedojoe/$gh_repo
-EOF
-        temp_dir=$(mktemp -d)
-        echo "=> Getting the latest version from GitHub ..."
-        wget -O "/tmp/$gh_repo.tar.gz" \
-        https://github.com/tuxedojoe/$gh_repo/archive/master.tar.gz
-        echo "=> Unpacking archive ..."
-        tar -xzf "/tmp/$gh_repo.tar.gz" -C "$temp_dir"
-        echo "=> Launching installer..."
-        $temp_dir/tux4ubuntu-master/install-tux4ubuntu.sh nested
-    fi
+
+function tux_install {
+    # Local/Github folder (comment out the other one if you're working locally)
+    $TEMP_DIR/tux-install-master/install.sh $1
+    #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
 }
+
 while :
 do
     clear
     # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
     cat<<EOF    
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ TUX 4 UBUNTU - Developer ver 1.0                © 2017 Tux4Ubuntu Initiative ║
-║ Let's Bring Tux to Ubuntu                     http://tux4ubuntu.blogspot.com ║
+║ TUX 4 UBUNTU - Developer ver 1.2                © 2018 Tux4Ubuntu Initiative ║
+║ Let's Bring Tux to Ubuntu                              http://tux4ubuntu.org ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                              ║
-║   What Tux developer tools do you want installed? (Press its number)         ║
+║   What TUX developer tools do you want installed? (Press its number)         ║
 ║                                                                              ║
 ║   1) All of it                                 - Install all of the below    ║
 ║   ------------------------------------------------------------------------   ║
@@ -582,9 +504,10 @@ do
 ║   5) GIT + SSH keys                            - Version handling            ║
 ║   6) Amazon CLI                                - AWS services in terminal    ║
 ║   7) Tilda                                     - Drop-down terminal (F1)     ║
-║   8) On my belly!                              - Buy the t-shirt             ║
 ║   ------------------------------------------------------------------------   ║
 ║   9) Uninstall                                 - Uninstall the above         ║
+║   ------------------------------------------------------------------------   ║
+║   T) Tux4Ubuntu installer                      - TUXedo up your Ubuntu       ║
 ║   ------------------------------------------------------------------------   ║
 ║   Q) I'm done                                  - Quit the installer (Ctrl+C) ║
 ║                                                                              ║
@@ -617,8 +540,8 @@ EOF
     "7")    install_tilda ;;
     "8")    get_the_tshirt ;;
     "9")    uninstall ;;
-    # "T")    tux_installer ;;
-    # "t")    tux_installer ;;
+    "T")    tux_installer ;;
+    "t")    tux_installer ;;
     "Q")    break ;;
     "q")    break ;;
      * )    echo "That's an invalid option. Try again." ;;
