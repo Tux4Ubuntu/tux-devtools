@@ -58,15 +58,14 @@ function install_chromium {
         wget -P /tmp/chrome-install/ https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo dpkg -i /tmp/chrome-install/google-chrome*.deb
         echo ""
-        echo "Successfully installed Chrome."
+        printf "${LIGHT_GREEN}Successfully installed Chrome${NC}\n"
     fi
 
     if ask_install "Chromium"; then
         check_sudo
         install_if_not_found "chromium-browser"
         sudo update-alternatives --config x-www-browser
-
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
@@ -87,7 +86,7 @@ function install_vsc {
         sudo apt-get update || true
         sudo apt-get install code # or code-insiders
 
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
@@ -105,7 +104,7 @@ function install_gimp {
         sudo apt update || true
         install_if_not_found "gimp gimp-gmic"
 
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
@@ -141,6 +140,7 @@ function install_git_and_ssh_keys {
         
         xclip -sel clip < ~/.ssh/id_rsa.pub || true
 
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
         echo "Successfully installed GIT and ssh keys."
         echo ""
         echo "Your public ssh key is now copied to your clipboard."
@@ -169,7 +169,7 @@ function install_amazon_cli {
         
         sudo pip3 install --upgrade --user awscli
         echo ""
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
@@ -193,7 +193,7 @@ function install_tilda {
         /usr/bin/tilda &
         sleep 2
         echo ""
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
@@ -267,20 +267,20 @@ EOF
 function uninstall_chromium { 
     printf "\033c"
     package_name="Chrome/Chromium"
-    header "Installing ${package_name^^}" "$1"
+    header "Uninstalling ${package_name^^}" "$1"
     if ask_uninstall "Chrome (Chromium is up next)"; then
         check_sudo               
         sudo apt-get remove google-chrome-stable || true
         sudo rm -r ~/.config/google-chrome || true
         echo ""
-        echo "Chrome is no longer installed."
+        printf "${LIGHT_GREEN}Successfully uninstalled Chrome${NC}\n"
     fi
     if ask_uninstall "Chromium"; then
         check_sudo
         uninstall_if_found "chromium-browser"
         sudo rm -r ~/.config/chromium-browser || true
         echo ""
-        echo "Chromium is no longer installed."
+        printf "${LIGHT_GREEN}Successfully uninstalled Chromium${NC}\n"
         sudo update-alternatives --config x-www-browser
     fi
     echo ""
@@ -368,11 +368,11 @@ function install_if_not_found {
         if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null; then
             echo -e "$pkg is already installed"
         else
-            echo "Installing $pkg."
+            printf "${YELLOW}Installing $pkg.${NC}\n"
             if sudo apt-get -qq --allow-unauthenticated install $pkg; then
-                echo "Successfully installed $pkg"
+                printf "${YELLOW}Successfully installed $pkg${NC}\n"
             else
-                echo "Error installing $pkg"
+                printf "${LIGHT_RED}Error installing $pkg${NC}\n"
             fi        
         fi
     done
@@ -384,12 +384,12 @@ function uninstall_if_found {
         if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null; then
             echo "Uninstalling $pkg."
             if sudo apt-get remove $pkg; then
-                echo "Successfully uninstalled $pkg"
+                printf "${YELLOW}Successfully uninstalled $pkg${NC}\n"
             else
-                echo "Error uninstalling $pkg"
+                printf "${LIGHT_RED}Error uninstalling $pkg${NC}\n"
             fi        
         else
-            echo -e "$pkg is not installed"
+            printf "${LIGHT_RED}$pkg is not installed${NC}\n"
         fi
     done
 }
