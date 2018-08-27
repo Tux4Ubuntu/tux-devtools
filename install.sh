@@ -513,8 +513,6 @@ EOF
             # install_amazon_cli $i
             # ((i++))
             install_tilda $i
-            ((i++))
-            get_the_tshirt $i
             ;;
     "a")    # Install everything
             STEPCOUNTER=true
@@ -530,8 +528,6 @@ EOF
             # install_amazon_cli $i
             # ((i++))
             install_tilda $i
-            ((i++))
-            get_the_tshirt $i
             ;;
     "1")    install_chromium ;;
     "2")    install_vsc ;;
