@@ -146,7 +146,7 @@ function install_gimp {
     
     echo ""
     read -n1 -r -p "Press any key to continue..." key
-    }
+}
 
 function install_git_and_ssh_keys {
     printf "\033c"
@@ -305,6 +305,7 @@ EOF
         sleep 1
     done
 }
+
 function uninstall_chromium { 
     printf "\033c"
     package_name="Chrome/Chromium"
@@ -327,6 +328,7 @@ function uninstall_chromium {
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
+
 function uninstall_vsc {
     printf "\033c"
     package_name="Visual Studio Code"
@@ -340,6 +342,7 @@ function uninstall_vsc {
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
+
 function uninstall_gimp {
     printf "\033c"
     package_name="GIMP Edge"
@@ -353,6 +356,7 @@ function uninstall_gimp {
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
+
 function uninstall_git_and_ssh_keys {
     printf "\033c"
     package_name="GIT + SSH keys"
@@ -377,6 +381,7 @@ function uninstall_amazon_cli {
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
+
 function uninstall_tilda {
     printf "\033c"
     package_name="Tilda (Drop-down terminal)"
