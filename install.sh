@@ -207,15 +207,13 @@ function uninstall {
         clear
         printf "\033c"
         # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
-        LIGHT_RED='\033[1;31m'
-        NC='\033[0m' # No Color
         printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
-        printf "║ ${LIGHT_RED}TUX 4 UBUNTU - Developer - UNINSTALL${NC}            © 2017 Tux4Ubuntu Initiative ║\n"                       
-        printf "║ Let's Pause Tux a Bit                         http://tux4ubuntu.blogspot.com ║\n"
+        printf "║ ${LIGHT_RED}TUX DEVTOOLS - UNINSTALLER${NC}                                 © 2018 Tux4Ubuntu ║\n"                       
+        printf "║ Let's Pause Tux a Bit                                 https://tux4ubuntu.org ║\n"
         printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
         cat<<EOF    
 ║                                                                              ║
-║   What do you wanna uninstall? (Type in one of the following numbers)    ║
+║   What do you wanna uninstall? (Type in one of the following numbers)        ║
 ║                                                                              ║
 ║   1) All of it                                 - Uninstall all of the below  ║
 ║   ------------------------------------------------------------------------   ║
@@ -461,7 +459,7 @@ do
     clear
     # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
     printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
-    printf "║ ${YELLOW}TUX 4 UBUNTU - DEVTOOLS ver 1.2${NC}                            © 2018 Tux4Ubuntu ║\n"
+    printf "║ ${YELLOW}TUX DEVTOOLS ver 1.2${NC}                            © 2018 Tux4Ubuntu ║\n"
     printf "║ Let's Bring TUX to Ubuntu                              http://tux4ubuntu.org ║\n"
     printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
 
