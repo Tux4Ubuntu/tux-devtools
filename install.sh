@@ -473,7 +473,7 @@ do
     clear
     # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
     printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
-    printf "║ ${YELLOW}TUX DEVTOOLS ver 1.2${NC}                            © 2018 Tux4Ubuntu ║\n"
+    printf "║ ${YELLOW}TUX DEVTOOLS ver 1.2${NC}                                       © 2018 Tux4Ubuntu ║\n"
     printf "║ Let's Bring TUX to Ubuntu                              http://tux4ubuntu.org ║\n"
     printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
 
@@ -543,7 +543,7 @@ EOF
     "U")    uninstall ;;
     "u")    uninstall ;;
     "T")    tux_installer ;;
-    "t")    tux_installer ;;
+    "t")    t   ux_installer ;;
     "Q")    break ;;
     "q")    break ;;
      * )    echo "That's an invalid option. Try again." ;;
