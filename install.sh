@@ -237,12 +237,6 @@ function install_tilda {
 
 }
 
-function tux_installer {
-    # Local/Github folder (comment out the other one if you're working locally)
-    ../tux-install/tux4ubuntu-menu.sh
-    #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
-}
-
 function uninstall {
     while :
     do
