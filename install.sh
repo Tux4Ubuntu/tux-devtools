@@ -215,16 +215,15 @@ function uninstall {
 ║                                                                              ║
 ║   What do you wanna uninstall? (Type in one of the following numbers)        ║
 ║                                                                              ║
-║   1) All of it                                 - Uninstall all of the below  ║
+║   A) All of it                                 - Uninstall all of the below  ║
 ║   ------------------------------------------------------------------------   ║
-║   2) Chrome/Chromium                                                         ║
-║   3) Visual Studio Code                                                      ║
-║   4) GIMP Edge                                                               ║
-║   5) GIT + SSH keys                                                          ║
-║   6) Amazon CLI                                                              ║
-║   7) Tilda                                                                   ║
+║   1) Chrome/Chromium                                                         ║
+║   2) Visual Studio Code                                                      ║
+║   3) GIMP Edge                                                               ║
+║   4) GIT + SSH keys                                                          ║
+║   5) Tilda                                                                   ║
 ║   ------------------------------------------------------------------------   ║
-║   8) Back to installing                        - Go back to installer        ║
+║   I) Back to installing                        - Go back to installer        ║
 ║   ------------------------------------------------------------------------   ║
 ║   Q) I'm done                                  - Quit the installer (Ctrl+C) ║
 ║                                                                              ║
@@ -232,7 +231,7 @@ function uninstall {
 EOF
         read -n1 -s
         case "$REPLY" in
-        "1")    # Uninstall everything
+        "A")    # Uninstall everything
                 STEPCOUNTER=true
                 i=1
                 uninstall_chromium $i
@@ -243,17 +242,32 @@ EOF
                 ((i++))
                 uninstall_git_and_ssh_keys $i
                 ((i++))
-                uninstall_amazon_cli $i
-                ((i++))
+                # uninstall_amazon_cli $i
+                # ((i++))
                 uninstall_tilda $i
                 ;;
-        "2")    uninstall_chromium ;;
-        "3")    uninstall_vsc ;;
-        "4")    uninstall_gimp ;;
-        "5")    uninstall_git_and_ssh_keys;;
-        "6")    uninstall_amazon_cli ;;
-        "7")    uninstall_tilda ;;
-        "8")    break ;;
+        "a")    # Uninstall everything
+                STEPCOUNTER=true
+                i=1
+                uninstall_chromium $i
+                ((i++))
+                uninstall_vsc $i
+                ((i++))
+                uninstall_gimp $i
+                ((i++))
+                uninstall_git_and_ssh_keys $i
+                ((i++))
+                # uninstall_amazon_cli $i
+                # ((i++))
+                uninstall_tilda $i
+                ;;
+        "1")    uninstall_chromium ;;
+        "2")    uninstall_vsc ;;
+        "3")    uninstall_gimp ;;
+        "4")    uninstall_git_and_ssh_keys;;
+        "5")    uninstall_tilda ;;
+        "I")    break ;;
+        "i")    break ;;
         "Q")    exit ;;
         "q")    exit ;;
          * )    echo "That's an invalid option. Try again." ;;
@@ -467,16 +481,15 @@ do
 ║                                                                              ║
 ║   What TUX developer tools do you want installed? (Press its number)         ║
 ║                                                                              ║
-║   1) All of it                                 - Install all of the below    ║
+║   A) All of it                                 - Install all of the below    ║
 ║   ------------------------------------------------------------------------   ║
-║   2) Chrome/Chromium                           - Adds another browser        ║
-║   3) Visual Studio Code                        - Great free editor           ║
-║   4) GIMP Edge                                 - Newest version of GIMP      ║
-║   5) GIT + SSH keys                            - Version handling            ║
-║   6) Amazon CLI                                - AWS services in terminal    ║
-║   7) Tilda                                     - Drop-down terminal (F1)     ║
+║   1) Chrome/Chromium                           - Adds another browser        ║
+║   2) Visual Studio Code                        - Great free editor           ║
+║   3) GIMP Edge                                 - Newest version of GIMP      ║
+║   4) GIT + SSH keys                            - Version handling            ║
+║   5) Tilda                                     - Drop-down terminal (F1)     ║
 ║   ------------------------------------------------------------------------   ║
-║   9) Uninstall                                 - Uninstall the above         ║
+║   U) Uninstall                                 - Uninstall the above         ║
 ║   ------------------------------------------------------------------------   ║
 ║   T) Tux4Ubuntu installer                      - TUXedo up your Ubuntu       ║
 ║   ------------------------------------------------------------------------   ║
@@ -486,7 +499,7 @@ do
 EOF
     read -n1 -s
     case "$REPLY" in
-    "1")    # Install everything
+    "A")    # Install everything
             STEPCOUNTER=true
             i=1
             install_chromium $i
@@ -497,20 +510,38 @@ EOF
             ((i++))
             install_git_and_ssh_keys $i
             ((i++))
-            install_amazon_cli $i
-            ((i++))
+            # install_amazon_cli $i
+            # ((i++))
             install_tilda $i
             ((i++))
             get_the_tshirt $i
             ;;
-    "2")    install_chromium ;;
-    "3")    install_vsc ;;
-    "4")    install_gimp ;;
-    "5")    install_git_and_ssh_keys;;
-    "6")    install_amazon_cli ;;
-    "7")    install_tilda ;;
-    "8")    get_the_tshirt ;;
-    "9")    uninstall ;;
+    "a")    # Install everything
+            STEPCOUNTER=true
+            i=1
+            install_chromium $i
+            ((i++))
+            install_vsc $i
+            ((i++))
+            install_gimp $i
+            ((i++))
+            install_git_and_ssh_keys $i
+            ((i++))
+            # install_amazon_cli $i
+            # ((i++))
+            install_tilda $i
+            ((i++))
+            get_the_tshirt $i
+            ;;
+    "1")    install_chromium ;;
+    "2")    install_vsc ;;
+    "3")    install_gimp ;;
+    "4")    install_git_and_ssh_keys;;
+    # "5")    install_amazon_cli ;;
+    "5")    install_tilda ;;
+    "7")    get_the_tshirt ;;
+    "U")    uninstall ;;
+    "u")    uninstall ;;
     "T")    tux_installer ;;
     "t")    tux_installer ;;
     "Q")    break ;;
