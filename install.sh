@@ -485,7 +485,7 @@ function ask_uninstall {
     done
 }
 
-function tux_install {
+function tux_installer {
     # Local/Github folder (comment out the other one if you're working locally)
     ../tux-install-master/install.sh
     #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
