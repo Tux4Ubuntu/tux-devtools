@@ -539,7 +539,7 @@ EOF
     "U")    uninstall ;;
     "u")    uninstall ;;
     "T")    tux_installer ;;
-    "t")    t   ux_installer ;;
+    "t")    tux_installer ;;
     "Q")    break ;;
     "q")    break ;;
      * )    echo "That's an invalid option. Try again." ;;
