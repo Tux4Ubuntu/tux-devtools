@@ -41,46 +41,10 @@ STEPCOUNTER=false # Sets to true if user choose to install Tux Everywhere
 OS_VERSION="";
 # Here we check if OS is supported
 # More info on other OSes regarding plymouth: http://brej.org/blog/?p=158
-if [[ `lsb_release -rs` == "16.04" ]]
-then
-    # The plymouth dir was moved in one update, therefore we have prepared for this one here
-    plymouth_dir="/usr/share/plymouth"
-    OS_VERSION="16.04"
-    sleep 1
-elif [[ `lsb_release -rs` == "16.10" ]]
-    plymouth_dir="/usr/share/plymouth"
-    OS_VERSION="16.10"
-then
-	plymouth_dir="/usr/share/plymouth"
-else
-	echo "Sorry! We haven't tried installing Tux4Ubuntu on your Linux distrubtion."
-    echo "Make sure you have the latest version at http://tux4ubuntu.blogspot.com"	
-    echo "(Or fork/edit our project/install-ubuntu.sh for your system, and then make a"
-    echo "pull request/send it to us so that more people can use it)"
-    echo ""
-    echo "Want to go ahead anyway? (Can be a bumby ride, but it might work flawless)"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"            
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) printf "\033c"
-                echo "Ahh, a brave one! Tux salutes you!"
-                echo "(If you get any error message, copy/paste on our website/stackoverflow"
-                echo "and if it works, please write a comment on our start page and let us know)"
-                echo ""
-                read -n1 -r -p "Press any key to continue..." key
-               	# We set the plymouth directory here 
-                plymouth_dir="/usr/share/plymouth"
-                break;;
-            No ) printf "\033c"
-                echo "Feel free to try when you're ready. Tux will be waiting."
-                echo ""
-                read -n1 -r -p "Press any key to continue..." key
-                exit
-                break;;
-        esac
-    done
-fi
+YELLOW='\033[1;33m'
+LIGHT_GREEN='\033[1;32m'
+LIGHT_RED='\033[1;31m'
+NC='\033[0m' # No Color
 
 function install_chromium { 
     printf "\033c"
@@ -444,16 +408,17 @@ function header {
     ch=' '
     echo "╔══════════════════════════════════════════════════════════════════════════════╗"
     printf "║"
-    printf " $1"
+    printf " ${YELLOW}$1${NC}"
     printf '%*s' "$len" | tr ' ' "$ch"
     if [ $STEPCOUNTER = true ]; then
-        printf "Step "$2
-        printf "/7 "
+        printf "Step "${LIGHT_GREEN}$2${NC}
+        printf "/5 "
     fi
     printf "║\n"
     echo "╚══════════════════════════════════════════════════════════════════════════════╝"
     echo ""
 }
+
 function ask_install {
     printf "Just double checking, you want to install $1?\n\n"
     echo "(Type 1 or 2, then press ENTER)"
@@ -495,11 +460,12 @@ while :
 do
     clear
     # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
-    cat<<EOF    
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ TUX 4 UBUNTU - Developer ver 1.2                © 2018 Tux4Ubuntu Initiative ║
-║ Let's Bring Tux to Ubuntu                              http://tux4ubuntu.org ║
-╠══════════════════════════════════════════════════════════════════════════════╣
+    printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
+    printf "║ ${YELLOW}TUX 4 UBUNTU - DEVTOOLS ver 1.2${NC}                            © 2018 Tux4Ubuntu ║\n"
+    printf "║ Let's Bring TUX to Ubuntu                              http://tux4ubuntu.org ║\n"
+    printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
+
+    cat<<EOF 
 ║                                                                              ║
 ║   What TUX developer tools do you want installed? (Press its number)         ║
 ║                                                                              ║
