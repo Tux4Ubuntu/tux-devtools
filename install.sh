@@ -462,12 +462,6 @@ function ask_uninstall {
     done
 }
 
-function tux_installer {
-    # Local/Github folder (comment out the other one if you're working locally)
-    ../tux-install-master/tux4ubuntu-menu.sh
-    #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
-}
-
 while :
 do
     clear
@@ -490,8 +484,6 @@ do
 ║   5) Tilda                                     - Drop-down terminal (F1)     ║
 ║   ------------------------------------------------------------------------   ║
 ║   U) Uninstall                                 - Uninstall the above         ║
-║   ------------------------------------------------------------------------   ║
-║   T) Tux4Ubuntu installer                      - TUXedo up your Ubuntu       ║
 ║   ------------------------------------------------------------------------   ║
 ║   Q) I'm done                                  - Quit the installer (Ctrl+C) ║
 ║                                                                              ║
@@ -538,8 +530,6 @@ EOF
     "7")    get_the_tshirt ;;
     "U")    uninstall ;;
     "u")    uninstall ;;
-    "T")    tux_installer ;;
-    "t")    tux_installer ;;
     "Q")    break ;;
     "q")    break ;;
      * )    echo "That's an invalid option. Try again." ;;
