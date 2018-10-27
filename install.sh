@@ -41,46 +41,10 @@ STEPCOUNTER=false # Sets to true if user choose to install Tux Everywhere
 OS_VERSION="";
 # Here we check if OS is supported
 # More info on other OSes regarding plymouth: http://brej.org/blog/?p=158
-if [[ `lsb_release -rs` == "16.04" ]]
-then
-    # The plymouth dir was moved in one update, therefore we have prepared for this one here
-    plymouth_dir="/usr/share/plymouth"
-    OS_VERSION="16.04"
-    sleep 1
-elif [[ `lsb_release -rs` == "16.10" ]]
-    plymouth_dir="/usr/share/plymouth"
-    OS_VERSION="16.10"
-then
-	plymouth_dir="/usr/share/plymouth"
-else
-	echo "Sorry! We haven't tried installing Tux4Ubuntu on your Linux distrubtion."
-    echo "Make sure you have the latest version at http://tux4ubuntu.blogspot.com"	
-    echo "(Or fork/edit our project/install-ubuntu.sh for your system, and then make a"
-    echo "pull request/send it to us so that more people can use it)"
-    echo ""
-    echo "Want to go ahead anyway? (Can be a bumby ride, but it might work flawless)"
-    echo ""
-    echo "(Type 1 or 2, then press ENTER)"            
-    select yn in "Yes" "No"; do
-        case $yn in
-            Yes ) printf "\033c"
-                echo "Ahh, a brave one! Tux salutes you!"
-                echo "(If you get any error message, copy/paste on our website/stackoverflow"
-                echo "and if it works, please write a comment on our start page and let us know)"
-                echo ""
-                read -n1 -r -p "Press any key to continue..." key
-               	# We set the plymouth directory here 
-                plymouth_dir="/usr/share/plymouth"
-                break;;
-            No ) printf "\033c"
-                echo "Feel free to try when you're ready. Tux will be waiting."
-                echo ""
-                read -n1 -r -p "Press any key to continue..." key
-                exit
-                break;;
-        esac
-    done
-fi
+YELLOW='\033[1;33m'
+LIGHT_GREEN='\033[1;32m'
+LIGHT_RED='\033[1;31m'
+NC='\033[0m' # No Color
 
 function install_chromium { 
     printf "\033c"
@@ -94,15 +58,14 @@ function install_chromium {
         wget -P /tmp/chrome-install/ https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo dpkg -i /tmp/chrome-install/google-chrome*.deb
         echo ""
-        echo "Successfully installed Chrome."
+        printf "${LIGHT_GREEN}Successfully installed Chrome${NC}\n"
     fi
 
     if ask_install "Chromium"; then
         check_sudo
         install_if_not_found "chromium-browser"
         sudo update-alternatives --config x-www-browser
-
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
@@ -123,7 +86,7 @@ function install_vsc {
         sudo apt-get update || true
         sudo apt-get install code # or code-insiders
 
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
@@ -141,12 +104,12 @@ function install_gimp {
         sudo apt update || true
         install_if_not_found "gimp gimp-gmic"
 
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
     read -n1 -r -p "Press any key to continue..." key
-    }
+}
 
 function install_git_and_ssh_keys {
     printf "\033c"
@@ -177,6 +140,7 @@ function install_git_and_ssh_keys {
         
         xclip -sel clip < ~/.ssh/id_rsa.pub || true
 
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
         echo "Successfully installed GIT and ssh keys."
         echo ""
         echo "Your public ssh key is now copied to your clipboard."
@@ -205,7 +169,7 @@ function install_amazon_cli {
         
         sudo pip3 install --upgrade --user awscli
         echo ""
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
@@ -229,7 +193,7 @@ function install_tilda {
         /usr/bin/tilda &
         sleep 2
         echo ""
-        echo "$package_name is installed."
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
     
     echo ""
@@ -237,61 +201,29 @@ function install_tilda {
 
 }
 
-function get_the_tshirt {
-    printf "\033c"
-    header "Get the T-SHIRT" "$1"
-    # Original T-shirt art by Joan Stark found here: http://www.ascii-code.com/ascii-art/clothing-and-accessories/shirts.php
-    # Tux painted by ppa package 'cowsay'
-cat << "EOF"
-                             .-""`'-..____..-'`""-.            
-                           /`\                    /`\          
-                          /`  |                  |  `\         
-                         /`   |       .--.       |   `\        
-                        /     |      |o_o |      |     \       
-                        '-.__.|      |:_/ |      |.___.-'            
-                              |     //   \ \     |            
-                              |    (|     | )    |    
-                              |   /'\_   _/`\    |             
-                              |   \___)=(___/    |             
-                              |                  |                     
-                              |                  |             
-                              '._              _.'             
-                                 `""--------""`                
-                                                                       
-EOF
-    echo ""
-    echo "Launching website in your favourite browser."
-    x-www-browser https://teespring.com/tux-tshirt &
-    read -n1 -r -p "Press any key to continue..." key
-    echo ""
-}
 function uninstall {
     while :
     do
         clear
         printf "\033c"
         # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
-        LIGHT_RED='\033[1;31m'
-        NC='\033[0m' # No Color
         printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
-        printf "║ ${LIGHT_RED}TUX 4 UBUNTU - Developer - UNINSTALL${NC}            © 2017 Tux4Ubuntu Initiative ║\n"                       
-        printf "║ Let's Pause Tux a Bit                         http://tux4ubuntu.blogspot.com ║\n"
+        printf "║ ${LIGHT_RED}TUX DEVTOOLS - UNINSTALLER${NC}                                 © 2018 Tux4Ubuntu ║\n"                       
+        printf "║ Let's Pause Tux a Bit                                 https://tux4ubuntu.org ║\n"
         printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
         cat<<EOF    
 ║                                                                              ║
-║   What do you wanna uninstall? (Type in one of the following numbers)    ║
+║   What do you wanna uninstall? (Type in one of the following numbers)        ║
 ║                                                                              ║
-║   1) All of it                                 - Uninstall all of the below  ║
+║   A) All of it                                 - Uninstall all of the below  ║
 ║   ------------------------------------------------------------------------   ║
-║   2) Chrome/Chromium                                                         ║
-║   3) Visual Studio Code                                                      ║
-║   4) GIMP Edge                                                               ║
-║   5) GIT + SSH keys                                                          ║
-║   6) Amazon CLI                                                              ║
-║   7) Tilda                                                                   ║
-║   8) Return the t-shirt                                                      ║
+║   1) Chrome/Chromium                                                         ║
+║   2) Visual Studio Code                                                      ║
+║   3) GIMP Edge                                                               ║
+║   4) GIT + SSH keys                                                          ║
+║   5) Tilda                                                                   ║
 ║   ------------------------------------------------------------------------   ║
-║   9) Back to installing                        - Go back to installer        ║
+║   I) Back to installing                        - Go back to installer        ║
 ║   ------------------------------------------------------------------------   ║
 ║   Q) I'm done                                  - Quit the installer (Ctrl+C) ║
 ║                                                                              ║
@@ -299,7 +231,7 @@ function uninstall {
 EOF
         read -n1 -s
         case "$REPLY" in
-        "1")    # Uninstall everything
+        "A")    # Uninstall everything
                 STEPCOUNTER=true
                 i=1
                 uninstall_chromium $i
@@ -310,20 +242,32 @@ EOF
                 ((i++))
                 uninstall_git_and_ssh_keys $i
                 ((i++))
-                uninstall_amazon_cli $i
-                ((i++))
+                # uninstall_amazon_cli $i
+                # ((i++))
                 uninstall_tilda $i
-                ((i++))
-                return_the_tshirt $i
                 ;;
-        "2")    uninstall_chromium ;;
-        "3")    uninstall_vsc ;;
-        "4")    uninstall_gimp ;;
-        "5")    uninstall_git_and_ssh_keys;;
-        "6")    uninstall_amazon_cli ;;
-        "7")    uninstall_tilda ;;
-        "8")    return_the_tshirt ;;
-        "9")    break ;;
+        "a")    # Uninstall everything
+                STEPCOUNTER=true
+                i=1
+                uninstall_chromium $i
+                ((i++))
+                uninstall_vsc $i
+                ((i++))
+                uninstall_gimp $i
+                ((i++))
+                uninstall_git_and_ssh_keys $i
+                ((i++))
+                # uninstall_amazon_cli $i
+                # ((i++))
+                uninstall_tilda $i
+                ;;
+        "1")    uninstall_chromium ;;
+        "2")    uninstall_vsc ;;
+        "3")    uninstall_gimp ;;
+        "4")    uninstall_git_and_ssh_keys;;
+        "5")    uninstall_tilda ;;
+        "I")    break ;;
+        "i")    break ;;
         "Q")    exit ;;
         "q")    exit ;;
          * )    echo "That's an invalid option. Try again." ;;
@@ -331,28 +275,30 @@ EOF
         sleep 1
     done
 }
+
 function uninstall_chromium { 
     printf "\033c"
     package_name="Chrome/Chromium"
-    header "Installing ${package_name^^}" "$1"
+    header "Uninstalling ${package_name^^}" "$1"
     if ask_uninstall "Chrome (Chromium is up next)"; then
         check_sudo               
         sudo apt-get remove google-chrome-stable || true
         sudo rm -r ~/.config/google-chrome || true
         echo ""
-        echo "Chrome is no longer installed."
+        printf "${LIGHT_GREEN}Successfully uninstalled Chrome${NC}\n"
     fi
     if ask_uninstall "Chromium"; then
         check_sudo
         uninstall_if_found "chromium-browser"
         sudo rm -r ~/.config/chromium-browser || true
         echo ""
-        echo "Chromium is no longer installed."
+        printf "${LIGHT_GREEN}Successfully uninstalled Chromium${NC}\n"
         sudo update-alternatives --config x-www-browser
     fi
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
+
 function uninstall_vsc {
     printf "\033c"
     package_name="Visual Studio Code"
@@ -366,6 +312,7 @@ function uninstall_vsc {
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
+
 function uninstall_gimp {
     printf "\033c"
     package_name="GIMP Edge"
@@ -379,6 +326,7 @@ function uninstall_gimp {
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
+
 function uninstall_git_and_ssh_keys {
     printf "\033c"
     package_name="GIT + SSH keys"
@@ -403,6 +351,7 @@ function uninstall_amazon_cli {
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
+
 function uninstall_tilda {
     printf "\033c"
     package_name="Tilda (Drop-down terminal)"
@@ -415,33 +364,7 @@ function uninstall_tilda {
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
-function return_the_tshirt {
-    printf "\033c"
-    header "Return the T-SHIRT" "$1"
-    # Original T-shirt art by Joan Stark found here: http://www.ascii-code.com/ascii-art/clothing-and-accessories/shirts.php
-    # Tux painted by ppa package 'cowsay'
-cat << "EOF"
-                             .-""`'-..____..-'`""-.            
-                           /`\                    /`\          
-                          /`  |                  |  `\         
-                         /`   |       .--.       |   `\        
-                        /     |      |o_o |      |     \       
-                        '-.__.|      |:_/ |      |.___.-'            
-                              |     //   \ \     |            
-                              |    (|     | )    |    
-                              |   /'\_   _/`\    |             
-                              |   \___)=(___/    |             
-                              |                  |                     
-                              |                  |             
-                              '._              _.'             
-                                 `""--------""`                
-EOF
-    echo ""
-    echo "Launching website in your favourite browser."
-    x-www-browser https://tux4ubuntu.blogspot.com/p/web-shop.html &
-    read -n1 -r -p "Press any key to continue..." key
-    echo ""
-}
+
 function check_sudo {
     if sudo -n true 2>/dev/null; then 
         :
@@ -457,30 +380,32 @@ function install_if_not_found {
         if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null; then
             echo -e "$pkg is already installed"
         else
-            echo "Installing $pkg."
+            printf "${YELLOW}Installing $pkg.${NC}\n"
             if sudo apt-get -qq --allow-unauthenticated install $pkg; then
-                echo "Successfully installed $pkg"
+                printf "${YELLOW}Successfully installed $pkg${NC}\n"
             else
-                echo "Error installing $pkg"
+                printf "${LIGHT_RED}Error installing $pkg${NC}\n"
             fi        
         fi
     done
 }
+
 function uninstall_if_found { 
     # As found here: http://askubuntu.com/questions/319307/reliably-check-if-a-package-is-installed-or-not
     for pkg in $1; do
         if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null; then
             echo "Uninstalling $pkg."
             if sudo apt-get remove $pkg; then
-                echo "Successfully uninstalled $pkg"
+                printf "${YELLOW}Successfully uninstalled $pkg${NC}\n"
             else
-                echo "Error uninstalling $pkg"
+                printf "${LIGHT_RED}Error uninstalling $pkg${NC}\n"
             fi        
         else
-            echo -e "$pkg is not installed"
+            printf "${LIGHT_RED}$pkg is not installed${NC}\n"
         fi
     done
 }
+
 function header {
     var_size=${#1}
     # 80 is a full width set by us (to work in the smallest standard terminal window)
@@ -495,16 +420,17 @@ function header {
     ch=' '
     echo "╔══════════════════════════════════════════════════════════════════════════════╗"
     printf "║"
-    printf " $1"
+    printf " ${YELLOW}$1${NC}"
     printf '%*s' "$len" | tr ' ' "$ch"
     if [ $STEPCOUNTER = true ]; then
-        printf "Step "$2
-        printf "/7 "
+        printf "Step "${LIGHT_GREEN}$2${NC}
+        printf "/5 "
     fi
     printf "║\n"
     echo "╚══════════════════════════════════════════════════════════════════════════════╝"
     echo ""
 }
+
 function ask_install {
     printf "Just double checking, you want to install $1?\n\n"
     echo "(Type 1 or 2, then press ENTER)"
@@ -535,56 +461,37 @@ function ask_uninstall {
         esac
     done
 }
+
 function tux_installer {
-    if [ "${BASH_ARGV[0]}" = "nested" ] ; then
-        exit
-    else
-        # This installer is inspired by Papirus Development Team: https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/blob/master/install-papirus-home-gtk.sh
-        gh_repo="tux4ubuntu"
-        gh_desc="Tux 4 Ubuntu - Let's bring Tux to Ubuntu"
-        cat <<- EOF
-     _____ _   ___  __  _  _     _   _ ____  _   _ _   _ _____ _   _ 
-    |_   _| | | \ \/ / | || |   | | | | __ )| | | | \ | |_   _| | | |
-      | | | | | |\  /  | || |_  | | | |  _ \| | | |  \| | | | | | | |
-      | | | |_| |/  \  |__   _| | |_| | |_) | |_| | |\  | | | | |_| |
-      |_|  \___//_/\_\    |_|    \___/|____/ \___/|_| \_| |_|  \___/ 
-                                                                      
-  $gh_desc
-  https://github.com/tuxedojoe/$gh_repo
-EOF
-        temp_dir=$(mktemp -d)
-        echo "=> Getting the latest version from GitHub ..."
-        wget -O "/tmp/$gh_repo.tar.gz" \
-        https://github.com/tuxedojoe/$gh_repo/archive/master.tar.gz
-        echo "=> Unpacking archive ..."
-        tar -xzf "/tmp/$gh_repo.tar.gz" -C "$temp_dir"
-        echo "=> Launching installer..."
-        $temp_dir/tux4ubuntu-master/install-tux4ubuntu.sh nested
-    fi
+    # Local/Github folder (comment out the other one if you're working locally)
+    ../tux-install-master/tux4ubuntu-menu.sh
+    #~/Projects/Tux4Ubuntu/src/tux-desktop-theme/install.sh $1
 }
+
 while :
 do
     clear
     # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
-    cat<<EOF    
-╔══════════════════════════════════════════════════════════════════════════════╗
-║ TUX 4 UBUNTU - Developer ver 1.0                © 2017 Tux4Ubuntu Initiative ║
-║ Let's Bring Tux to Ubuntu                     http://tux4ubuntu.blogspot.com ║
-╠══════════════════════════════════════════════════════════════════════════════╣
+    printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
+    printf "║ ${YELLOW}TUX DEVTOOLS ver 1.2${NC}                                       © 2018 Tux4Ubuntu ║\n"
+    printf "║ Let's Bring TUX's Tools to Ubuntu                     https://tux4ubuntu.org ║\n"
+    printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
+
+    cat<<EOF 
 ║                                                                              ║
-║   What Tux developer tools do you want installed? (Press its number)         ║
+║   What TUX developer tools do you want installed? (Press its number)         ║
 ║                                                                              ║
-║   1) All of it                                 - Install all of the below    ║
+║   A) All of it                                 - Install all of the below    ║
 ║   ------------------------------------------------------------------------   ║
-║   2) Chrome/Chromium                           - Adds another browser        ║
-║   3) Visual Studio Code                        - Great free editor           ║
-║   4) GIMP Edge                                 - Newest version of GIMP      ║
-║   5) GIT + SSH keys                            - Version handling            ║
-║   6) Amazon CLI                                - AWS services in terminal    ║
-║   7) Tilda                                     - Drop-down terminal (F1)     ║
-║   8) On my belly!                              - Buy the t-shirt             ║
+║   1) Chrome/Chromium                           - Adds another browser        ║
+║   2) Visual Studio Code                        - Great free editor           ║
+║   3) GIMP Edge                                 - Newest version of GIMP      ║
+║   4) GIT + SSH keys                            - Version handling            ║
+║   5) Tilda                                     - Drop-down terminal (F1)     ║
 ║   ------------------------------------------------------------------------   ║
-║   9) Uninstall                                 - Uninstall the above         ║
+║   U) Uninstall                                 - Uninstall the above         ║
+║   ------------------------------------------------------------------------   ║
+║   T) Tux4Ubuntu installer                      - TUXedo up your Ubuntu       ║
 ║   ------------------------------------------------------------------------   ║
 ║   Q) I'm done                                  - Quit the installer (Ctrl+C) ║
 ║                                                                              ║
@@ -592,7 +499,7 @@ do
 EOF
     read -n1 -s
     case "$REPLY" in
-    "1")    # Install everything
+    "A")    # Install everything
             STEPCOUNTER=true
             i=1
             install_chromium $i
@@ -603,22 +510,36 @@ EOF
             ((i++))
             install_git_and_ssh_keys $i
             ((i++))
-            install_amazon_cli $i
-            ((i++))
+            # install_amazon_cli $i
+            # ((i++))
             install_tilda $i
-            ((i++))
-            get_the_tshirt $i
             ;;
-    "2")    install_chromium ;;
-    "3")    install_vsc ;;
-    "4")    install_gimp ;;
-    "5")    install_git_and_ssh_keys;;
-    "6")    install_amazon_cli ;;
-    "7")    install_tilda ;;
-    "8")    get_the_tshirt ;;
-    "9")    uninstall ;;
-    # "T")    tux_installer ;;
-    # "t")    tux_installer ;;
+    "a")    # Install everything
+            STEPCOUNTER=true
+            i=1
+            install_chromium $i
+            ((i++))
+            install_vsc $i
+            ((i++))
+            install_gimp $i
+            ((i++))
+            install_git_and_ssh_keys $i
+            ((i++))
+            # install_amazon_cli $i
+            # ((i++))
+            install_tilda $i
+            ;;
+    "1")    install_chromium ;;
+    "2")    install_vsc ;;
+    "3")    install_gimp ;;
+    "4")    install_git_and_ssh_keys;;
+    # "5")    install_amazon_cli ;;
+    "5")    install_tilda ;;
+    "7")    get_the_tshirt ;;
+    "U")    uninstall ;;
+    "u")    uninstall ;;
+    "T")    tux_installer ;;
+    "t")    tux_installer ;;
     "Q")    break ;;
     "q")    break ;;
      * )    echo "That's an invalid option. Try again." ;;
