@@ -1,34 +1,34 @@
 #!/bin/bash
-# 
+#
 # install-ubuntu-dev.sh - Tux4Ubuntu Installer
-#                                                   
+#
 # Copyright (C) 2017 Tux4Ubuntu Initiative <http://tux4ubuntu.blogspot.com>
 #
-# Permission is hereby granted, free of charge, 
-# to any person obtaining a copy of this software and 
-# associated documentation files (the "Software"), to 
-# deal in the Software without restriction, including 
-# without limitation the rights to use, copy, modify, 
-# merge, publish, distribute, sublicense, and/or sell 
-# copies of the Software, and to permit persons to whom 
-# the Software is furnished to do so, 
+# Permission is hereby granted, free of charge,
+# to any person obtaining a copy of this software and
+# associated documentation files (the "Software"), to
+# deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify,
+# merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom
+# the Software is furnished to do so,
 # subject to the following conditions:
 #
-# The above copyright notice and this permission notice 
+# The above copyright notice and this permission notice
 # shall be included in all copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
-# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR 
-# ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+# ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-# 
+#
 # Written and designed by: Tuxedo Joe <http://github.com/tuxedojoe>
 # for The Tux4Ubuntu Initiative <http://tux4ubuntu.blogspot.com>
 #
-# For CREDITS AND ATTRIBUTION see README 
+# For CREDITS AND ATTRIBUTION see README
 
 # Change directory to same as script is running in
 cd "$(dirname "$0")"
@@ -46,15 +46,15 @@ LIGHT_GREEN='\033[1;32m'
 LIGHT_RED='\033[1;31m'
 NC='\033[0m' # No Color
 
-function install_chromium { 
+function install_chromium {
     printf "\033c"
     package_name="Chrome/Chromium"
     header "Installing ${package_name^^}" "$1"
-    
+
     if ask_install "Chrome (Chromium is up next)"; then
         check_sudo
         sudo apt-get install libxss1 libappindicator1 libindicator7
-        
+
         wget -P /tmp/chrome-install/ https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo dpkg -i /tmp/chrome-install/google-chrome*.deb
         echo ""
@@ -67,7 +67,7 @@ function install_chromium {
         sudo update-alternatives --config x-www-browser
         printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
-    
+
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
@@ -88,7 +88,7 @@ function install_vsc {
 
         printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
-    
+
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
@@ -106,7 +106,7 @@ function install_gimp {
 
         printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
-    
+
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
@@ -135,9 +135,9 @@ function install_git_and_ssh_keys {
         fi
 
         ssh-add ~/.ssh/id_rsa || true
-        
+
         ssh -T git@github.com || true
-        
+
         xclip -sel clip < ~/.ssh/id_rsa.pub || true
 
         printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
@@ -153,7 +153,6 @@ function install_git_and_ssh_keys {
     fi
     echo ""
     read -n1 -r -p "Press any key to continue..." key
-
 }
 
 function install_amazon_cli {
@@ -166,12 +165,12 @@ function install_amazon_cli {
         sudo apt-get update || true
         install_if_not_found "python3-pip"
         sudo pip3 install --upgrade pip
-        
+
         sudo pip3 install --upgrade --user awscli
         echo ""
         printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
-    
+
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
@@ -195,10 +194,72 @@ function install_tilda {
         echo ""
         printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
     fi
-    
+
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 
+}
+
+function install_cursor {
+    printf "\033c"
+    package_name="Cursor AI Editor"
+    header "Installing ${package_name^^}" "$1"
+    if ask_install "$package_name"; then
+        check_sudo
+
+        # Install required dependencies
+        install_if_not_found "libfuse2 curl jq"
+
+        # Create directories if they don't exist
+        sudo mkdir -p /opt
+
+        # Get latest release info from GitHub API
+        echo "Fetching latest Cursor version information..."
+        LATEST_VERSION=$(curl -s https://api.github.com/repos/getcursor/cursor/releases/latest | jq -r .tag_name)
+
+        if [ -z "$LATEST_VERSION" ]; then
+            echo "Could not fetch latest version information. Using direct download link..."
+            DOWNLOAD_URL="https://download.cursor.sh/linux/appImage/x64"
+        else
+            echo "Installing Cursor version ${LATEST_VERSION}..."
+            DOWNLOAD_URL="https://github.com/getcursor/cursor/releases/download/${LATEST_VERSION}/Cursor-${LATEST_VERSION}-linux-x86_64.AppImage"
+        fi
+
+        # Download latest Cursor AppImage
+        echo "Downloading Cursor..."
+        if ! wget -O /tmp/cursor.AppImage "$DOWNLOAD_URL"; then
+            echo "Failed to download from GitHub release, trying direct download..."
+            wget -O /tmp/cursor.AppImage "https://download.cursor.sh/linux/appImage/x64"
+        fi
+
+        # Make AppImage executable and move to /opt
+        chmod +x /tmp/cursor.AppImage
+        sudo mv /tmp/cursor.AppImage /opt/cursor.appimage
+
+        # Create desktop entry
+        echo "Creating desktop entry..."
+        cat << EOF | sudo tee /usr/share/applications/cursor.desktop
+[Desktop Entry]
+Name=Cursor
+Exec=/opt/cursor.appimage
+Icon=/opt/cursor.png
+Type=Application
+Categories=Development;
+EOF
+
+        # Download icon
+        wget -O /tmp/cursor.png "https://raw.githubusercontent.com/getcursor/cursor/main/assets/icon.png"
+        sudo mv /tmp/cursor.png /opt/cursor.png
+
+        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
+        if [ ! -z "$LATEST_VERSION" ]; then
+            printf "${LIGHT_GREEN}Version: $LATEST_VERSION${NC}\n"
+        fi
+        echo "You may need to log out and back in to see the application in your menu."
+    fi
+
+    echo ""
+    read -n1 -r -p "Press any key to continue..." key
 }
 
 function uninstall {
@@ -208,10 +269,10 @@ function uninstall {
         printf "\033c"
         # Menu system as found here: http://stackoverflow.com/questions/20224862/bash-script-always-show-menu-after-loop-execution
         printf "╔══════════════════════════════════════════════════════════════════════════════╗\n"
-        printf "║ ${LIGHT_RED}TUX DEVTOOLS - UNINSTALLER${NC}                                 © 2018 Tux4Ubuntu ║\n"                       
+        printf "║ ${LIGHT_RED}TUX DEVTOOLS - UNINSTALLER${NC}                                 © 2018 Tux4Ubuntu ║\n"
         printf "║ Let's Pause Tux a Bit                                 https://tux4ubuntu.org ║\n"
         printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
-        cat<<EOF    
+        cat<<EOF
 ║                                                                              ║
 ║   What do you wanna uninstall? (Type in one of the following numbers)        ║
 ║                                                                              ║
@@ -222,6 +283,7 @@ function uninstall {
 ║   3) GIMP Edge                                                               ║
 ║   4) GIT + SSH keys                                                          ║
 ║   5) Tilda                                                                   ║
+║   6) Cursor                                                                  ║
 ║   ------------------------------------------------------------------------   ║
 ║   I) Back to installing                        - Go back to installer        ║
 ║   ------------------------------------------------------------------------   ║
@@ -245,6 +307,8 @@ EOF
                 # uninstall_amazon_cli $i
                 # ((i++))
                 uninstall_tilda $i
+                ((i++))
+                uninstall_cursor $i
                 ;;
         "a")    # Uninstall everything
                 STEPCOUNTER=true
@@ -260,12 +324,15 @@ EOF
                 # uninstall_amazon_cli $i
                 # ((i++))
                 uninstall_tilda $i
+                ((i++))
+                uninstall_cursor $i
                 ;;
         "1")    uninstall_chromium ;;
         "2")    uninstall_vsc ;;
         "3")    uninstall_gimp ;;
         "4")    uninstall_git_and_ssh_keys;;
         "5")    uninstall_tilda ;;
+        "6")    uninstall_cursor ;;
         "I")    break ;;
         "i")    break ;;
         "Q")    exit ;;
@@ -276,12 +343,12 @@ EOF
     done
 }
 
-function uninstall_chromium { 
+function uninstall_chromium {
     printf "\033c"
     package_name="Chrome/Chromium"
     header "Uninstalling ${package_name^^}" "$1"
     if ask_uninstall "Chrome (Chromium is up next)"; then
-        check_sudo               
+        check_sudo
         sudo apt-get remove google-chrome-stable || true
         sudo rm -r ~/.config/google-chrome || true
         echo ""
@@ -307,8 +374,8 @@ function uninstall_vsc {
         check_sudo
         sudo apt-get purge code || true
         echo ""
-    fi     
-   
+    fi
+
     echo ""
     read -n1 -r -p "Press any key to continue..." key
 }
@@ -319,7 +386,7 @@ function uninstall_gimp {
     header "Uninstalling ${package_name^^}" "$1"
     if ask_uninstall "$package_name"; then
         check_sudo
-        install_if_not_found "ppa-purge" 
+        install_if_not_found "ppa-purge"
         sudo ppa-purge ppa:otto-kesselgulasch/gimp-edge || true
         uninstall_if_found "gimp gimp-gmic"
     fi
@@ -365,16 +432,35 @@ function uninstall_tilda {
     read -n1 -r -p "Press any key to continue..." key
 }
 
+function uninstall_cursor {
+    printf "\033c"
+    package_name="Cursor AI Editor"
+    header "Uninstalling ${package_name^^}" "$1"
+    if ask_uninstall "$package_name"; then
+        check_sudo
+
+        # Remove application files
+        sudo rm -f /opt/cursor.appimage
+        sudo rm -f /opt/cursor.png
+        sudo rm -f /usr/share/applications/cursor.desktop
+
+        printf "${LIGHT_GREEN}Successfully uninstalled $package_name${NC}\n"
+    fi
+
+    echo ""
+    read -n1 -r -p "Press any key to continue..." key
+}
+
 function check_sudo {
-    if sudo -n true 2>/dev/null; then 
+    if sudo -n true 2>/dev/null; then
         :
     else
-        echo "Oh, and Tux will need sudo rights to copy and install everything, so he'll ask" 
+        echo "Oh, and Tux will need sudo rights to copy and install everything, so he'll ask"
         echo "about that below."
         echo ""
     fi
 }
-function install_if_not_found { 
+function install_if_not_found {
     # As found here: http://askubuntu.com/questions/319307/reliably-check-if-a-package-is-installed-or-not
     for pkg in $1; do
         if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null; then
@@ -385,12 +471,12 @@ function install_if_not_found {
                 printf "${YELLOW}Successfully installed $pkg${NC}\n"
             else
                 printf "${LIGHT_RED}Error installing $pkg${NC}\n"
-            fi        
+            fi
         fi
     done
 }
 
-function uninstall_if_found { 
+function uninstall_if_found {
     # As found here: http://askubuntu.com/questions/319307/reliably-check-if-a-package-is-installed-or-not
     for pkg in $1; do
         if dpkg --get-selections | grep -q "^$pkg[[:space:]]*install$" >/dev/null; then
@@ -399,7 +485,7 @@ function uninstall_if_found {
                 printf "${YELLOW}Successfully uninstalled $pkg${NC}\n"
             else
                 printf "${LIGHT_RED}Error uninstalling $pkg${NC}\n"
-            fi        
+            fi
         else
             printf "${LIGHT_RED}$pkg is not installed${NC}\n"
         fi
@@ -412,7 +498,7 @@ function header {
     if [ $STEPCOUNTER = false ]; then
         # 80 - 2 - 1 = 77 to allow space for side lines and the first space after border.
         len=$(expr 77 - $var_size)
-    else   
+    else
         # "Step X/X " is 9
         # 80 - 2 - 1 - 9 = 68 to allow space for side lines and the first space after border.
         len=$(expr 68 - $var_size)
@@ -424,7 +510,7 @@ function header {
     printf '%*s' "$len" | tr ' ' "$ch"
     if [ $STEPCOUNTER = true ]; then
         printf "Step "${LIGHT_GREEN}$2${NC}
-        printf "/5 "
+        printf "/6 "
     fi
     printf "║\n"
     echo "╚══════════════════════════════════════════════════════════════════════════════╝"
@@ -436,7 +522,7 @@ function ask_install {
     echo "(Type 1 or 2, then press ENTER)"
     select yn in "Yes" "No"; do
         case $yn in
-            Yes ) 
+            Yes )
                 return 0
                 break;;
             No )
@@ -451,7 +537,7 @@ function ask_uninstall {
     echo "(Type 1 or 2, then press ENTER)"
     select yn in "Yes" "No"; do
         case $yn in
-            Yes ) 
+            Yes )
                 return 0
                 break;;
             No )
@@ -471,7 +557,7 @@ do
     printf "║ Let's Bring TUX's Tools to Ubuntu                     https://tux4ubuntu.org ║\n"
     printf "╠══════════════════════════════════════════════════════════════════════════════╣\n"
 
-    cat<<EOF 
+    cat<<EOF
 ║                                                                              ║
 ║   What TUX developer tools do you want installed? (Press its number)         ║
 ║                                                                              ║
@@ -482,6 +568,7 @@ do
 ║   3) GIMP Edge                                 - Newest version of GIMP      ║
 ║   4) GIT + SSH keys                            - Version handling            ║
 ║   5) Tilda                                     - Drop-down terminal (F1)     ║
+║   6) Cursor                                    - AI-powered code editor       ║
 ║   ------------------------------------------------------------------------   ║
 ║   U) Uninstall                                 - Uninstall the above         ║
 ║   ------------------------------------------------------------------------   ║
@@ -505,6 +592,8 @@ EOF
             # install_amazon_cli $i
             # ((i++))
             install_tilda $i
+            ((i++))
+            install_cursor $i
             ;;
     "a")    # Install everything
             STEPCOUNTER=true
@@ -520,6 +609,8 @@ EOF
             # install_amazon_cli $i
             # ((i++))
             install_tilda $i
+            ((i++))
+            install_cursor $i
             ;;
     "1")    install_chromium ;;
     "2")    install_vsc ;;
@@ -527,6 +618,7 @@ EOF
     "4")    install_git_and_ssh_keys;;
     # "5")    install_amazon_cli ;;
     "5")    install_tilda ;;
+    "6")    install_cursor ;;
     "7")    get_the_tshirt ;;
     "U")    uninstall ;;
     "u")    uninstall ;;
