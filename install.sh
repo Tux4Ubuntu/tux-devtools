@@ -208,28 +208,19 @@ function install_cursor {
         check_sudo
 
         # Install required dependencies
-        install_if_not_found "libfuse2 curl jq"
+        install_if_not_found "libfuse2 wget ca-certificates"
 
         # Create directories if they don't exist
         sudo mkdir -p /opt
 
-        # Get latest release info from GitHub API
-        echo "Fetching latest Cursor version information..."
-        LATEST_VERSION=$(curl -s https://api.github.com/repos/getcursor/cursor/releases/latest | jq -r .tag_name)
+        # Update CA certificates
+        sudo update-ca-certificates
 
-        if [ -z "$LATEST_VERSION" ]; then
-            echo "Could not fetch latest version information. Using direct download link..."
-            DOWNLOAD_URL="https://download.cursor.sh/linux/appImage/x64"
-        else
-            echo "Installing Cursor version ${LATEST_VERSION}..."
-            DOWNLOAD_URL="https://github.com/getcursor/cursor/releases/download/${LATEST_VERSION}/Cursor-${LATEST_VERSION}-linux-x86_64.AppImage"
-        fi
-
-        # Download latest Cursor AppImage
+        # Download latest Cursor AppImage directly from cursor.sh
         echo "Downloading Cursor..."
-        if ! wget -O /tmp/cursor.AppImage "$DOWNLOAD_URL"; then
-            echo "Failed to download from GitHub release, trying direct download..."
-            wget -O /tmp/cursor.AppImage "https://download.cursor.sh/linux/appImage/x64"
+        if ! wget --tries=3 -O /tmp/cursor.AppImage "https://download.cursor.sh/linux/appImage/x64"; then
+            printf "${LIGHT_RED}Failed to download Cursor. Please check your internet connection and try again.${NC}\n"
+            return 1
         fi
 
         # Make AppImage executable and move to /opt
@@ -248,13 +239,10 @@ Categories=Development;
 EOF
 
         # Download icon
-        wget -O /tmp/cursor.png "https://raw.githubusercontent.com/getcursor/cursor/main/assets/icon.png"
+        wget --tries=3 -O /tmp/cursor.png "https://raw.githubusercontent.com/getcursor/cursor/main/assets/icon.png"
         sudo mv /tmp/cursor.png /opt/cursor.png
 
         printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
-        if [ ! -z "$LATEST_VERSION" ]; then
-            printf "${LIGHT_GREEN}Version: $LATEST_VERSION${NC}\n"
-        fi
         echo "You may need to log out and back in to see the application in your menu."
     fi
 
