@@ -237,7 +237,7 @@ function install_cursor {
         echo "   ~/Downloads/Cursor-<version>.AppImage"
         echo ""
 
-        read -p "📂 Enter the full path to the Cursor AppImage file: " cursor_path
+        read -p "📂 Enter the full path to the Cursor AppImage file (or download it again and restart this command and it will be found): " cursor_path
     else
         cursor_path="$latest_cursor_file"
     fi
