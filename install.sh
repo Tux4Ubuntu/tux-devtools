@@ -200,36 +200,51 @@ function install_tilda {
 
 }
 
+
 function install_cursor {
     printf "\033c"
-    package_name="Cursor AI Editor"
-    header "Installing ${package_name^^}" "$1"
-    if ask_install "$package_name"; then
-        check_sudo
+    echo "=========================================="
+    echo "    Installing Cursor AI Editor on Linux"
+    echo "=========================================="
+    echo ""
+    
+    # Prompt the user to download the file manually
+    echo "⚠️  Cursor AI Editor does not provide a direct download link."
+    echo "🔗  Please download the latest AppImage manually from: "
+    echo "    👉  https://www.cursor.com/downloads"
+    echo ""
+    echo "💡 After downloading, locate the file path."
+    echo "   You can use the command: pwd"
+    echo "   If you downloaded to 'Downloads', the path is likely:"
+    echo "   ~/Downloads/Cursor-<version>.AppImage"
+    echo ""
+    
+    # Prompt the user to enter the file path
+    read -p "📂 Enter the full path to the Cursor AppImage file: " cursor_path
 
-        # Install required dependencies
-        install_if_not_found "libfuse2 wget ca-certificates"
+    # Check if the file exists
+    if [[ ! -f "$cursor_path" ]]; then
+        echo "❌ Error: File not found at '$cursor_path'. Please try again."
+        exit 1
+    fi
 
-        # Create directories if they don't exist
-        sudo mkdir -p /opt
+    echo "✅ Found file at $cursor_path"
 
-        # Update CA certificates
-        sudo update-ca-certificates
+    # Install required dependencies
+    echo "📦 Installing required dependencies..."
+    sudo apt update && sudo apt install -y libfuse2 ca-certificates
 
-        # Download latest Cursor AppImage directly from cursor.sh
-        echo "Downloading Cursor..."
-        if ! wget --tries=3 -O /tmp/cursor.AppImage "https://download.cursor.sh/linux/appImage/x64"; then
-            printf "${LIGHT_RED}Failed to download Cursor. Please check your internet connection and try again.${NC}\n"
-            return 1
-        fi
+    # Create the /opt directory if it doesn't exist
+    sudo mkdir -p /opt
 
-        # Make AppImage executable and move to /opt
-        chmod +x /tmp/cursor.AppImage
-        sudo mv /tmp/cursor.AppImage /opt/cursor.appimage
+    # Move the AppImage to /opt
+    echo "🚚 Moving Cursor to /opt/cursor.appimage"
+    sudo mv "$cursor_path" /opt/cursor.appimage
+    sudo chmod +x /opt/cursor.appimage
 
-        # Create desktop entry
-        echo "Creating desktop entry..."
-        cat << EOF | sudo tee /usr/share/applications/cursor.desktop
+    # Create desktop entry
+    echo "🖥️  Creating desktop entry..."
+    cat << EOF | sudo tee /usr/share/applications/cursor.desktop
 [Desktop Entry]
 Name=Cursor
 Exec=/opt/cursor.appimage
@@ -238,16 +253,16 @@ Type=Application
 Categories=Development;
 EOF
 
-        # Download icon
-        wget --tries=3 -O /tmp/cursor.png "https://raw.githubusercontent.com/getcursor/cursor/main/assets/icon.png"
-        sudo mv /tmp/cursor.png /opt/cursor.png
+    # Download icon
+    echo "🎨 Downloading Cursor icon..."
+    wget --tries=3 -O /tmp/cursor.png "https://raw.githubusercontent.com/getcursor/cursor/main/assets/icon.png"
+    sudo mv /tmp/cursor.png /opt/cursor.png
 
-        printf "${LIGHT_GREEN}Successfully installed $package_name${NC}\n"
-        echo "You may need to log out and back in to see the application in your menu."
-    fi
-
+    echo "🎉 Successfully installed Cursor AI Editor!"
+    echo "🚀 You can now run Cursor from your Applications menu."
+    echo "   Or start it manually with: /opt/cursor.appimage"
     echo ""
-    read -n1 -r -p "Press any key to continue..." key
+    echo "🔄 If you don't see the icon, log out and log back in."
 }
 
 function uninstall {
