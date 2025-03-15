@@ -253,10 +253,30 @@ function install_cursor {
     # Create the /opt directory if it doesn't exist
     sudo mkdir -p /opt
 
-    # Move the AppImage to /opt
-    echo "🚚 Moving Cursor to /opt/cursor.appimage"
-    sudo mv "$cursor_path" /opt/cursor.appimage
+    # Copy the AppImage instead of moving it (so it stays in Downloads)
+    echo "🚚 Copying Cursor to /opt/cursor.appimage"
+    sudo cp "$cursor_path" /opt/cursor.appimage
     sudo chmod +x /opt/cursor.appimage
+
+    # Prompt user for Cursor logo URL
+    echo ""
+    echo "🎨 Cursor needs an icon for the Applications menu."
+    echo "💡 You can provide a URL for the icon, or press Enter to use the default cursor.png in the script folder."
+    read -p "🌐 Enter a Cursor logo URL (or press Enter to use the local cursor.png): " cursor_logo_url
+
+    # Handle logo selection
+    if [[ -n "$cursor_logo_url" ]]; then
+        echo "🌍 Downloading custom Cursor logo..."
+        wget --tries=3 -O /tmp/cursor.png "$cursor_logo_url"
+        sudo mv /tmp/cursor.png /opt/cursor.png
+    else
+        echo "📁 Using local cursor.png from script folder."
+        if [[ -f "$(dirname "$0")/cursor.png" ]]; then
+            sudo cp "$(dirname "$0")/cursor.png" /opt/cursor.png
+        else
+            echo "⚠️ Warning: cursor.png not found in the script folder! The application may not have an icon."
+        fi
+    fi
 
     # Create desktop entry
     echo "🖥️  Creating desktop entry..."
@@ -268,11 +288,6 @@ Icon=/opt/cursor.png
 Type=Application
 Categories=Development;
 EOF
-
-    # Download icon from the new link
-    echo "🎨 Downloading Cursor logo..."
-    wget --tries=3 -O /tmp/cursor.png "https://images.prismic.io/sacra/Z0Sul68jQArT1Sb7_cursorlogo.png?auto=format,compress"
-    sudo mv /tmp/cursor.png /opt/cursor.png
 
     echo "🎉 Successfully installed Cursor AI Editor!"
     echo "🚀 You can now run Cursor from your Applications menu."
