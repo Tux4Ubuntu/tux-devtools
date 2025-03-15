@@ -207,20 +207,40 @@ function install_cursor {
     echo "    Installing Cursor AI Editor on Linux"
     echo "=========================================="
     echo ""
-    
-    # Prompt the user to download the file manually
-    echo "⚠️  Cursor AI Editor does not provide a direct download link."
-    echo "🔗  Please download the latest AppImage manually from: "
-    echo "    👉  https://www.cursor.com/downloads"
-    echo ""
-    echo "💡 After downloading, locate the file path."
-    echo "   You can use the command: pwd"
-    echo "   If you downloaded to 'Downloads', the path is likely:"
-    echo "   ~/Downloads/Cursor-<version>.AppImage"
-    echo ""
-    
-    # Prompt the user to enter the file path
-    read -p "📂 Enter the full path to the Cursor AppImage file: " cursor_path
+
+    # Install required dependencies
+    echo "📦 Installing required dependencies..."
+    sudo apt update && sudo apt install -y libfuse2 ca-certificates
+
+    # Search for the latest Cursor AppImage in ~/Downloads/
+    latest_cursor_file=$(ls -t ~/Downloads/Cursor-*.AppImage 2>/dev/null | head -n 1)
+
+    if [[ -n "$latest_cursor_file" ]]; then
+        echo "🔍 Found a Cursor AppImage in Downloads:"
+        echo "   👉 $latest_cursor_file"
+        read -p "📂 Do you want to use this file? (Y/n): " use_found_file
+        if [[ "$use_found_file" =~ ^[Nn]$ ]]; then
+            latest_cursor_file=""
+        fi
+    fi
+
+    # If no file was auto-detected or user rejected it, ask for input
+    if [[ -z "$latest_cursor_file" ]]; then
+        echo ""
+        echo "⚠️  Cursor AI Editor does not provide a direct download link."
+        echo "🔗  Please download the latest AppImage manually from: "
+        echo "    👉  https://www.cursor.com/downloads"
+        echo ""
+        echo "💡 After downloading, locate the file path."
+        echo "   You can use the command: pwd"
+        echo "   If you downloaded to 'Downloads', the path is likely:"
+        echo "   ~/Downloads/Cursor-<version>.AppImage"
+        echo ""
+
+        read -p "📂 Enter the full path to the Cursor AppImage file: " cursor_path
+    else
+        cursor_path="$latest_cursor_file"
+    fi
 
     # Check if the file exists
     if [[ ! -f "$cursor_path" ]]; then
@@ -229,10 +249,6 @@ function install_cursor {
     fi
 
     echo "✅ Found file at $cursor_path"
-
-    # Install required dependencies
-    echo "📦 Installing required dependencies..."
-    sudo apt update && sudo apt install -y libfuse2 ca-certificates
 
     # Create the /opt directory if it doesn't exist
     sudo mkdir -p /opt
