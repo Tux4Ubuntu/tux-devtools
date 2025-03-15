@@ -1,7 +1,7 @@
 # tux-devtools
 
-TODO:
-- Add FlatPacks to Software
+## TODO:
+### Add FlatPacks to Software
 sudo apt update
 sudo apt install --reinstall gnome-software gnome-software-plugin-flatpak
 killall gnome-software && gnome-software
@@ -17,4 +17,14 @@ Order=apt,flatpak
 
 
 
-- Add mouse dynamic mouse pointer for trackpad
+### Add mouse dynamic mouse pointer for trackpad
+
+
+### Add rust build tools:
+curl https://sh.rustup.rs -sSf | sh
+
+### Add nvm build tools:
+
+### Add build essetials
+sudo apt update
+sudo apt install -y build-essential gcc
