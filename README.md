@@ -28,3 +28,7 @@ curl https://sh.rustup.rs -sSf | sh
 ### Add build essetials
 sudo apt update
 sudo apt install -y build-essential gcc
+
+### Ratio scaloing
+gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+
